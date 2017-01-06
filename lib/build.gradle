@@ -1,0 +1,85 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'jacoco'
+
+android {
+    compileSdkVersion rootProject.ext.sdk_version
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion rootProject.ext.sdk_version
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            testCoverageEnabled true
+        }
+        lintOptions {
+            abortOnError false
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    //glide
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.github.Qixingchen:Android-Base-Utils:V1.0.1'
+    testCompile 'junit:junit:4.12'
+}
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.compile
+}
+
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+[javadoc]*.options*.encoding = 'UTF-8'
+[javadoc]*.options*.charSet = 'UTF-8'
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+coveralls {
+    jacocoReportPath = "${buildDir}/reports/jacoco/debug/jacoco.xml"
+}
+
+tasks.coveralls {
+    dependsOn 'assembleDebugUnitTest'
+    onlyIf { System.env.'CI' }
+}
+
