@@ -3,13 +3,10 @@ apply plugin: "com.vanniktech.android.junit.jacoco"
 
 buildscript {
     repositories {
-        maven {
-            url "http://192.168.2.240:9080/nexus/content/groups/public/"
-        }
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0-beta1'
+        classpath 'com.android.tools.build:gradle:2.3.0-beta2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
         classpath 'com.vanniktech:gradle-android-junit-jacoco-plugin:0.5.0'
@@ -21,9 +18,6 @@ buildscript {
 
 allprojects {
     repositories {
-        maven {
-            url "http://192.168.2.240:9080/nexus/content/groups/public/"
-        }
         jcenter()
         maven { url "https://jitpack.io" }
     }

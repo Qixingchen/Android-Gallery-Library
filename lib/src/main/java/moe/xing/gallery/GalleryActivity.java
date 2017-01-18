@@ -24,11 +24,17 @@ public class GalleryActivity extends AppCompatActivity {
     private static final String PICS = "PICS";
     private static final String PICSRES = "PICSRES";
     private static final String NEEDCLOSE = "NEEDCLOSE";
+    private static final String POSITION = "POSITION";
     private ActivityGalleryBinding mBinding;
 
     public static Intent startIntent(Context context, ArrayList<String> pics) {
+        return startIntent(context, pics, 0);
+    }
+
+    public static Intent startIntent(Context context, ArrayList<String> pics, int position) {
         Intent intent = new Intent(context, GalleryActivity.class);
         intent.putStringArrayListExtra(PICS, pics);
+        intent.putExtra(POSITION, position);
         return intent;
     }
 
@@ -85,6 +91,7 @@ public class GalleryActivity extends AppCompatActivity {
 
             }
         });
-        mBinding.picsViewPager.setCurrentItem(0);
+        int position = getIntent().getIntExtra(POSITION, 0);
+        mBinding.picsViewPager.setCurrentItem(position);
     }
 }
