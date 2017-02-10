@@ -8,10 +8,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import moe.xing.baseutils.Init;
+import moe.xing.baseutils.utils.PXUtils;
 import moe.xing.gallery.databinding.ActivityGalleryBinding;
 
 /**
@@ -25,16 +30,39 @@ public class GalleryActivity extends AppCompatActivity {
     private static final String PICSRES = "PICSRES";
     private static final String NEEDCLOSE = "NEEDCLOSE";
     private static final String POSITION = "POSITION";
+    private static final String NEED_POINT = "NEED_POINT";
     private ActivityGalleryBinding mBinding;
 
-    public static Intent startIntent(Context context, ArrayList<String> pics) {
+    public static Intent startIntent(Context context, List<String> pics) {
         return startIntent(context, pics, 0);
     }
 
-    public static Intent startIntent(Context context, ArrayList<String> pics, int position) {
+    public static Intent startIntent(Context context, List<String> pics, int position) {
+        return startIntent(context, pics, position, false);
+    }
+
+    /**
+     * 启动的 intent
+     *
+     * @param context   context
+     * @param pics      图片地址列表
+     * @param position  当前图片位置
+     * @param needPoint 是否需要位置指示器
+     */
+    public static Intent startIntent(Context context, List<String> pics, int position, boolean needPoint) {
         Intent intent = new Intent(context, GalleryActivity.class);
-        intent.putStringArrayListExtra(PICS, pics);
+
+        if (pics instanceof ArrayList) {
+            intent.putStringArrayListExtra(PICS, (ArrayList<String>) pics);
+        } else {
+            ArrayList<String> picList = new ArrayList<>();
+            for (String s : pics) {
+                picList.add(s);
+                intent.putStringArrayListExtra(PICS, picList);
+            }
+        }
         intent.putExtra(POSITION, position);
+        intent.putExtra(NEED_POINT, needPoint);
         return intent;
     }
 
@@ -47,16 +75,38 @@ public class GalleryActivity extends AppCompatActivity {
     /**
      * @param needClose 是否需要在最后一张点击退出页面
      */
-    public static Intent startIntent(Context context, ArrayList<Integer> picsRes, boolean needClose) {
+    public static Intent startIntent(Context context, List<Integer> picsRes, boolean needClose) {
+        return startIntent(context, picsRes, needClose, false);
+    }
+
+    /**
+     * 启动的 intent
+     *
+     * @param context   context
+     * @param picsRes   图片资源列表
+     * @param needPoint 是否需要位置指示器
+     * @param needClose 是否需要在最后一张点击退出页面
+     */
+    public static Intent startIntent(Context context, List<Integer> picsRes, boolean needClose, boolean needPoint) {
         Intent intent = new Intent(context, GalleryActivity.class);
-        intent.putIntegerArrayListExtra(PICSRES, picsRes);
+        if (picsRes instanceof ArrayList) {
+            intent.putIntegerArrayListExtra(PICSRES, (ArrayList<Integer>) picsRes);
+        } else {
+            ArrayList<Integer> res = new ArrayList<>();
+            for (Integer i : picsRes) {
+                res.add(i);
+            }
+            intent.putIntegerArrayListExtra(PICSRES, res);
+        }
         intent.putExtra(NEEDCLOSE, needClose);
+        intent.putExtra(NEED_POINT, needPoint);
         return intent;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Init.getInstance(getApplication(), true, "1.0", "gallery_demo");
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.activity_gallery, null, false);
         setContentView(mBinding.getRoot());
     }
@@ -79,6 +129,8 @@ public class GalleryActivity extends AppCompatActivity {
                 if (needClose && position == size - 1) {
                     setResult(RESULT_OK);
                     finish();
+                } else if (getIntent().getBooleanExtra(NEED_POINT, false)) {
+                    drawPointChange(size, position);
                 }
             }
 
@@ -93,5 +145,57 @@ public class GalleryActivity extends AppCompatActivity {
         });
         int position = getIntent().getIntExtra(POSITION, 0);
         mBinding.picsViewPager.setCurrentItem(position);
+        if (getIntent().getBooleanExtra(NEED_POINT, false)) {
+            drawPointInit(size, position);
+        }
+    }
+
+    /**
+     * 绘制指示点
+     *
+     * @param sum 图片总数
+     * @param now 目前位置
+     */
+    private void drawPointInit(int sum, int now) {
+        mBinding.point.removeAllViews();
+        for (int i = 0; i < sum; i++) {
+            ImageView imageView = new ImageView(this);
+            imageView.setPadding(PXUtils.dpToPx(3), PXUtils.dpToPx(6), PXUtils.dpToPx(3), PXUtils.dpToPx(6));
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+//            layoutParams.setMargins(PXUtils.dpToPx(3), PXUtils.dpToPx(6), PXUtils.dpToPx(3), PXUtils.dpToPx(6));
+            if (i == now) {
+                imageView.setImageResource(R.drawable.point_now);
+                mBinding.point.addView(imageView, layoutParams);
+            } else {
+                imageView.setImageResource(R.drawable.point_not_now);
+                mBinding.point.addView(imageView, layoutParams);
+            }
+            final int finalI = i;
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mBinding.picsViewPager.setCurrentItem(finalI);
+                }
+            });
+        }
+    }
+
+    /**
+     * 绘制指示点
+     *
+     * @param sum 图片总数
+     * @param now 目前位置
+     */
+    private void drawPointChange(int sum, int now) {
+
+        for (int i = 0; i < sum; i++) {
+            if (i == now) {
+                ((ImageView) mBinding.point.getChildAt(i)).setImageResource(R.drawable.point_now);
+            } else {
+                ((ImageView) mBinding.point.getChildAt(i)).setImageResource(R.drawable.point_not_now);
+            }
+        }
     }
 }

@@ -43,7 +43,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     //glide
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.github.Qixingchen:Android-Base-Utils:V1.0.1'
+    compile 'com.github.Qixingchen:Android-Base-Utils:V1.0.2'
     testCompile 'junit:junit:4.12'
 }
 

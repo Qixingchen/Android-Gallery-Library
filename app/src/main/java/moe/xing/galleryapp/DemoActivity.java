@@ -35,7 +35,7 @@ public class DemoActivity extends AppCompatActivity {
 
                 images.add("https://manekin3k0.files.wordpress.com/2015/08/nicosmile.jpg");
 
-                startActivity(GalleryActivity.startIntent(DemoActivity.this, images));
+                startActivity(GalleryActivity.startIntent(DemoActivity.this, images, 0, true));
             }
         });
     }
