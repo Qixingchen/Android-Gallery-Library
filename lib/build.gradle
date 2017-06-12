@@ -24,7 +24,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
         }
         debug {
             testCoverageEnabled true
@@ -43,7 +43,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     //glide
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.github.Qixingchen:Android-Base-Utils:V1.0.2'
+    compile 'com.github.Qixingchen:Android-Base-Utils:V1.0.6'
     testCompile 'junit:junit:4.12'
 }
 
