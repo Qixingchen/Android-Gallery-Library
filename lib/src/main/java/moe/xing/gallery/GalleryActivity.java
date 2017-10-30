@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -25,12 +26,14 @@ import moe.xing.gallery.databinding.ActivityGalleryBinding;
  * 图片查看
  */
 
+@SuppressWarnings("SameParameterValue")
 public class GalleryActivity extends AppCompatActivity {
     private static final String PICS = "PICS";
     private static final String PICSRES = "PICSRES";
     private static final String NEEDCLOSE = "NEEDCLOSE";
     private static final String POSITION = "POSITION";
     private static final String NEED_POINT = "NEED_POINT";
+    private static final String HOLDER = "HOLDER";
     private ActivityGalleryBinding mBinding;
 
     public static Intent startIntent(Context context, List<String> pics) {
@@ -41,6 +44,10 @@ public class GalleryActivity extends AppCompatActivity {
         return startIntent(context, pics, position, false);
     }
 
+    public static Intent startIntent(Context context, List<String> pics, int position, boolean needPoint) {
+        return startIntent(context, pics, position, needPoint, R.drawable.img_holder);
+    }
+
     /**
      * 启动的 intent
      *
@@ -48,8 +55,10 @@ public class GalleryActivity extends AppCompatActivity {
      * @param pics      图片地址列表
      * @param position  当前图片位置
      * @param needPoint 是否需要位置指示器
+     * @param holder    加载等待图
      */
-    public static Intent startIntent(Context context, List<String> pics, int position, boolean needPoint) {
+    @SuppressWarnings("SameParameterValue")
+    public static Intent startIntent(Context context, List<String> pics, int position, boolean needPoint, @DrawableRes int holder) {
         Intent intent = new Intent(context, GalleryActivity.class);
 
         if (pics instanceof ArrayList) {
@@ -63,10 +72,22 @@ public class GalleryActivity extends AppCompatActivity {
         }
         intent.putExtra(POSITION, position);
         intent.putExtra(NEED_POINT, needPoint);
+        intent.putExtra(HOLDER, holder);
         return intent;
     }
 
     public static Intent startIntent(Context context, String pic) {
+        return startIntent(context, pic, R.drawable.img_holder);
+    }
+
+    /**
+     * 启动的 intent
+     *
+     * @param context context
+     * @param pic     图片地址
+     * @param holder  加载等待图
+     */
+    public static Intent startIntent(Context context, String pic, @DrawableRes int holder) {
         ArrayList<String> pics = new ArrayList<>();
         pics.add(pic);
         return startIntent(context, pics);
@@ -117,10 +138,11 @@ public class GalleryActivity extends AppCompatActivity {
         Intent intent = getIntent();
         List<String> pics = intent.getStringArrayListExtra(PICS);
         List<Integer> picsRes = intent.getIntegerArrayListExtra(PICSRES);
+        int holder = getIntent().getIntExtra(HOLDER, R.drawable.img_holder);
         final boolean needClose
                 = getIntent().getBooleanExtra(NEEDCLOSE, false);
 
-        GalleryAdapter galleryAdapter = new GalleryAdapter(pics, picsRes);
+        GalleryAdapter galleryAdapter = new GalleryAdapter(pics, picsRes, holder);
         final int size = galleryAdapter.getCount();
         mBinding.picsViewPager.setAdapter(galleryAdapter);
         mBinding.picsViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
