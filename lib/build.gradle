@@ -5,7 +5,6 @@ apply plugin: 'jacoco'
 
 android {
     compileSdkVersion rootProject.ext.sdk_version
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 19
@@ -36,15 +35,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     //glide
-    compile 'com.github.bumptech.glide:glide:4.2.0'
-    compile 'com.github.Qixingchen:Android-Base-Utils:V1.0.6'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    implementation 'com.github.Qixingchen:Android-Base-Utils:V1.1.2'
+    testImplementation 'junit:junit:4.12'
 }
 
 // build a jar with source files
