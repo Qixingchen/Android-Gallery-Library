@@ -1,3 +1,6 @@
+V1.3.0
+add zoom feature
+
 V1.2.1
 upgrade glide to 4.6.1  
 fix crash

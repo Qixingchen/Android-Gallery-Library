@@ -34,6 +34,7 @@ public class GalleryActivity extends AppCompatActivity {
     private static final String POSITION = "POSITION";
     private static final String NEED_POINT = "NEED_POINT";
     private static final String HOLDER = "HOLDER";
+    private static final String ALLOW_ZOOM = "ALLOW_ZOOM";
     private ActivityGalleryBinding mBinding;
 
     public static Intent startIntent(Context context, List<String> pics) {
@@ -48,6 +49,10 @@ public class GalleryActivity extends AppCompatActivity {
         return startIntent(context, pics, position, needPoint, R.drawable.img_holder);
     }
 
+    public static Intent startIntent(Context context, List<String> pics, int position, boolean needPoint, @DrawableRes int holder) {
+        return startIntent(context, pics, position, needPoint, holder, false);
+    }
+
     /**
      * 启动的 intent
      *
@@ -58,7 +63,7 @@ public class GalleryActivity extends AppCompatActivity {
      * @param holder    加载等待图
      */
     @SuppressWarnings("SameParameterValue")
-    public static Intent startIntent(Context context, List<String> pics, int position, boolean needPoint, @DrawableRes int holder) {
+    public static Intent startIntent(Context context, List<String> pics, int position, boolean needPoint, @DrawableRes int holder, boolean allowZoom) {
         Intent intent = new Intent(context, GalleryActivity.class);
 
         if (pics instanceof ArrayList) {
@@ -73,6 +78,7 @@ public class GalleryActivity extends AppCompatActivity {
         intent.putExtra(POSITION, position);
         intent.putExtra(NEED_POINT, needPoint);
         intent.putExtra(HOLDER, holder);
+        intent.putExtra(ALLOW_ZOOM, allowZoom);
         return intent;
     }
 
@@ -141,8 +147,9 @@ public class GalleryActivity extends AppCompatActivity {
         int holder = getIntent().getIntExtra(HOLDER, R.drawable.img_holder);
         final boolean needClose
                 = getIntent().getBooleanExtra(NEEDCLOSE, false);
+        boolean allowZoom = getIntent().getBooleanExtra(ALLOW_ZOOM, false);
 
-        GalleryAdapter galleryAdapter = new GalleryAdapter(pics, picsRes, holder);
+        GalleryAdapter galleryAdapter = new GalleryAdapter(pics, picsRes, holder, allowZoom);
         final int size = galleryAdapter.getCount();
         mBinding.picsViewPager.setAdapter(galleryAdapter);
         mBinding.picsViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

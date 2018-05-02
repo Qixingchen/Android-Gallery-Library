@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-    </data>
-
-    <RelativeLayout
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+        android:id="@+id/pic"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#ccc"
+        android:scaleType="fitCenter"/>
 
-        <ImageView
-            android:id="@+id/pic"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ccc"
-            android:scaleType="fitCenter"/>
-
-    </RelativeLayout>
-</layout>
+</RelativeLayout>

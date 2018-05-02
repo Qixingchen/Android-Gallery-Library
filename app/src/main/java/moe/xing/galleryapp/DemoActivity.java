@@ -27,15 +27,16 @@ public class DemoActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 ArrayList<String> images = new ArrayList<String>();
-                images.add("http://vignette1.wikia.nocookie.net/love-live/images/e/e2/S2Ep07_00286.png/revision/latest?cb=20140522145104");
+                images.add("https://lc-ayndtsch.cn-n1.lcfile.com/398b9b355ecebe791964.png");
 
-                images.add("http://adn.i.ntere.st/p/14423060/image");
+                images.add("https://lc-ayndtsch.cn-n1.lcfile.com/15878660a09763b7b052.jpg");
 
                 images.add("http://images6.fanpop.com/image/photos/37500000/Yazawa-Nico-3-love-live-school-idol-project-37589004-500-281.jpg");
+                images.add("https://upload.wikimedia.org/wikipedia/commons/3/3d/LARGE_elevation.jpg");
+                images.add("https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/LARGE_elevation.jpg/1980px-LARGE_elevation.jpg");
 
-                images.add("https://manekin3k0.files.wordpress.com/2015/08/nicosmile.jpg");
 
-                startActivity(GalleryActivity.startIntent(DemoActivity.this, images, 2, true));
+                startActivity(GalleryActivity.startIntent(DemoActivity.this, images, 2, true, R.drawable.img_holder, true));
             }
         });
     }

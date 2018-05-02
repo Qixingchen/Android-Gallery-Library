@@ -1,6 +1,7 @@
 package moe.xing.gallery;
 
-import android.databinding.DataBindingUtil;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -9,11 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.Target;
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
+import java.io.File;
 import java.util.List;
-
-import moe.xing.gallery.databinding.ItemBigPicBinding;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Qi Xingchen on 16-11-3.
@@ -28,11 +32,13 @@ class GalleryAdapter extends PagerAdapter {
     private List<String> pics;
     @Nullable
     private List<Integer> picsRes;
+    private boolean allowZoom;
 
-    GalleryAdapter(@Nullable List<String> pics, @Nullable List<Integer> picsRes, @DrawableRes int holder) {
+    GalleryAdapter(@Nullable List<String> pics, @Nullable List<Integer> picsRes, @DrawableRes int holder, boolean allowZoom) {
         this.pics = pics;
         this.picsRes = picsRes;
         this.holder = holder;
+        this.allowZoom = allowZoom;
     }
 
     @Override
@@ -56,19 +62,46 @@ class GalleryAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, final int position) {
-        ItemBigPicBinding picBinding = DataBindingUtil.inflate(LayoutInflater.from(container.getContext()), R.layout.item_big_pic, container, false);
-        if (pics != null) {
-            Glide.with(container.getContext()).load(pics.get(position))
-                    .apply(new RequestOptions().placeholder(holder).fitCenter())
-                    .into(picBinding.pic);
-        } else if (picsRes != null) {
-            Glide.with(container.getContext()).load(picsRes.get(position))
-                    .apply(new RequestOptions().fitCenter())
-                    .into(picBinding.pic);
+    public Object instantiateItem(final ViewGroup container, final int position) {
+
+        View imageView = LayoutInflater.from(container.getContext()).inflate(R.layout.item_big_pic, container, false);
+        final SubsamplingScaleImageView scaleImageView = imageView.findViewById(R.id.pic);
+        if (scaleImageView == null) {
+            return imageView;
         }
-        container.addView(picBinding.getRoot());
-        return picBinding.getRoot();
+        scaleImageView.setImage(ImageSource.resource(holder));
+        scaleImageView.setPanEnabled(allowZoom);
+        scaleImageView.setZoomEnabled(allowZoom);
+
+        if (pics != null) {
+
+
+            final FutureTarget<File> future = Glide.with(container.getContext())
+                    .load(pics.get(position))
+                    .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final File cacheFile = future.get();
+                        scaleImageView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scaleImageView.setImage(ImageSource.uri(Uri.fromFile(cacheFile)));
+                            }
+                        });
+
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else if (picsRes != null) {
+            scaleImageView.setImage(ImageSource.resource(picsRes.get(position)));
+        }
+        container.addView(imageView);
+        return imageView;
     }
 
 }
