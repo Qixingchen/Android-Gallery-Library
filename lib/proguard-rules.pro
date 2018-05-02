@@ -25,3 +25,6 @@
 #-renamesourcefileattribute SourceFile
 
 -dontwarn moe.xing.gallery.**
+
+-keep class com.davemorrissey.labs.subscaleview.** { *; }
+
