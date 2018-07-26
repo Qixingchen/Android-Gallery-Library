@@ -175,7 +175,7 @@ public class GalleryActivity extends AppCompatActivity {
         int position = getIntent().getIntExtra(POSITION, 0);
         mBinding.picsViewPager.setCurrentItem(position);
         if (getIntent().getBooleanExtra(NEED_POINT, false)) {
-            drawPointInit(size, position);
+            drawPointInit(size - (getIntent().getBooleanExtra(NEEDCLOSE, false) ? 1 : 0), position);
         }
     }
 

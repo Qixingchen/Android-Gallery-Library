@@ -1,3 +1,6 @@
+V1.3.1
+don't draw last point when need close is true
+
 V1.3.0
 add zoom feature
 
