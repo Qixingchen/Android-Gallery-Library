@@ -7,12 +7,12 @@ android {
     compileSdkVersion rootProject.ext.sdk_version
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 23
         targetSdkVersion rootProject.ext.sdk_version
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
 
@@ -36,12 +36,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    implementation 'androidx.appcompat:appcompat:1.0.2'
     //glide
-    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
     implementation 'com.github.Qixingchen:Android-Base-Utils:V1.1.2'
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
     testImplementation 'junit:junit:4.12'

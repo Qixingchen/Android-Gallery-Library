@@ -2,9 +2,6 @@ package moe.xing.gallery;
 
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +15,10 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
 
 /**
  * Created by Qi Xingchen on 16-11-3.

@@ -1,3 +1,6 @@
+V1.4.0
+support androidX
+
 V1.3.1
 don't draw last point when need close is true
 

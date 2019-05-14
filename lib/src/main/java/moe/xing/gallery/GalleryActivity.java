@@ -2,12 +2,7 @@ package moe.xing.gallery;
 
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +11,11 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.viewpager.widget.ViewPager;
 import moe.xing.baseutils.Init;
 import moe.xing.baseutils.utils.PXUtils;
 import moe.xing.gallery.databinding.ActivityGalleryBinding;

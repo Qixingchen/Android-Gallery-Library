@@ -1,13 +1,13 @@
 package moe.xing.galleryapp;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import moe.xing.gallery.GalleryActivity;
 import moe.xing.galleryapp.databinding.ActivityDemoBinding;
 
