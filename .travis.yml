@@ -29,7 +29,7 @@ android:
 script:
   - ./gradlew :lib:assembleDebug
   - ./gradlew :lib:assembleRelease
-  - ./gradlew :lib:jacocoTestReportDebug coveralls
+  # - ./gradlew :lib:jacocoTestReportDebug coveralls
 #  - ./gradlew testDebugUnitTest
 #  - ./gradlew createDebugCoverageReport coveralls
 #  - ./gradlew connectedAndroidTest coveralls
