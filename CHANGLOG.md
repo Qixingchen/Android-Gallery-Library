@@ -1,3 +1,6 @@
+V1.5.0
+fix point not change
+
 V1.4.0
 support androidX
 
