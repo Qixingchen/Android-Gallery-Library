@@ -220,10 +220,13 @@ public class GalleryActivity extends AppCompatActivity {
     private void drawPointChange(int sum, int now) {
 
         for (int i = 0; i < sum; i++) {
-            if (i == now) {
-                ((ImageView) mBinding.point.getChildAt(i)).setImageResource(R.drawable.point_now);
-            } else {
-                ((ImageView) mBinding.point.getChildAt(i)).setImageResource(R.drawable.point_not_now);
+            ImageView imageView = (ImageView) mBinding.point.getChildAt(i);
+            if (imageView != null) {
+                if (i == now) {
+                    imageView.setImageResource(R.drawable.point_now);
+                } else {
+                    imageView.setImageResource(R.drawable.point_not_now);
+                }
             }
         }
     }
