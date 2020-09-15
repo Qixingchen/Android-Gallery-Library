@@ -140,17 +140,15 @@ class GalleryAdapter extends PagerAdapter {
                                                         Intent share = new Intent(Intent.ACTION_SEND);
                                                         share.setType("image/jpeg");
                                                         Uri contentUri = getUriForFile(Init.getApplication(), Init.getApplication().getPackageName() + ".fileprovider", cacheFile);
-
-                                                        Intent intent = new Intent(Intent.ACTION_SEND);
                                                         String mime = URLConnection.guessContentTypeFromName(cacheFile.getName());
-                                                        for (ResolveInfo resolveInfo : moe.xing.baseutils.utils.IntentUtils.getIntentAppIcon(intent)) {
+                                                        for (ResolveInfo resolveInfo : moe.xing.baseutils.utils.IntentUtils.getIntentAppIcon(share)) {
                                                             String packageName = resolveInfo.activityInfo.packageName;
                                                             Init.getApplication().grantUriPermission(packageName, contentUri,
                                                                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                                                                             | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                                                         }
-                                                        intent.setDataAndType(contentUri, mime);
-                                                        intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                                                        share.setDataAndType(contentUri, mime);
+                                                        share.putExtra(Intent.EXTRA_STREAM, contentUri);
                                                         IntentUtils.startIntent(share);
                                                         break;
                                                 }
