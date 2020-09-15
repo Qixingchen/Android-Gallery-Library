@@ -108,7 +108,7 @@ class GalleryAdapter extends PagerAdapter {
                         scaleImageView.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
-                                final String[] actions = new String[]{"保存图片", "分享图片"};
+                                final String[] actions = new String[]{"保存图片"};
                                 new AlertDialog.Builder(imageView.getContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
                                         .setTitle("请选择操作")
                                         .setItems(actions, new DialogInterface.OnClickListener() {
