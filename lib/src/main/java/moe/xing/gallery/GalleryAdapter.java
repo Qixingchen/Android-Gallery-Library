@@ -109,7 +109,7 @@ class GalleryAdapter extends PagerAdapter {
                             @Override
                             public boolean onLongClick(View v) {
                                 final String[] actions = new String[]{"保存图片", "分享图片"};
-                                new AlertDialog.Builder(imageView.getContext(), R.style.Theme_AppCompat_Dialog_Alert)
+                                new AlertDialog.Builder(imageView.getContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
                                         .setTitle("请选择操作")
                                         .setItems(actions, new DialogInterface.OnClickListener() {
                                             @Override
@@ -139,7 +139,7 @@ class GalleryAdapter extends PagerAdapter {
                                                     case 1:
                                                         Intent share = new Intent(Intent.ACTION_SEND);
                                                         share.setType("image/jpeg");
-                                                        Uri contentUri = getUriForFile(Init.getApplication(), BuildConfig.APPLICATION_ID + ".fileprovider", cacheFile);
+                                                        Uri contentUri = getUriForFile(Init.getApplication(), Init.getApplication().getPackageName() + ".fileprovider", cacheFile);
 
                                                         Intent intent = new Intent(Intent.ACTION_SEND);
                                                         String mime = URLConnection.guessContentTypeFromName(cacheFile.getName());
