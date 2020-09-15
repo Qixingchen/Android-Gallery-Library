@@ -1,3 +1,6 @@
+V1.6.0
+add save image
+
 V1.5.0
 fix point not change
 
