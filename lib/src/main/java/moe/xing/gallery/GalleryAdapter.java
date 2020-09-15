@@ -1,10 +1,21 @@
 package moe.xing.gallery;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
@@ -13,12 +24,14 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
 import java.io.File;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import androidx.annotation.DrawableRes;
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.PagerAdapter;
+import moe.xing.baseutils.Init;
+import moe.xing.baseutils.utils.IntentUtils;
+
+import static androidx.core.content.FileProvider.getUriForFile;
 
 /**
  * Created by Qi Xingchen on 16-11-3.
@@ -65,7 +78,7 @@ class GalleryAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(final ViewGroup container, final int position) {
 
-        View imageView = LayoutInflater.from(container.getContext()).inflate(R.layout.item_big_pic, container, false);
+        final View imageView = LayoutInflater.from(container.getContext()).inflate(R.layout.item_big_pic, container, false);
         final SubsamplingScaleImageView scaleImageView = imageView.findViewById(R.id.pic);
         if (scaleImageView == null) {
             return imageView;
@@ -92,15 +105,71 @@ class GalleryAdapter extends PagerAdapter {
                                 scaleImageView.setImage(ImageSource.uri(Uri.fromFile(cacheFile)));
                             }
                         });
+                        scaleImageView.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                final String[] actions = new String[]{"保存图片", "分享图片"};
+                                new AlertDialog.Builder(imageView.getContext(), R.style.Theme_AppCompat_Dialog_Alert)
+                                        .setTitle("请选择操作")
+                                        .setItems(actions, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                switch (which) {
+                                                    case 0:
+                                                        String url = pics.get(position);
+                                                        Uri uri = Uri.parse(url);
+                                                        // Create request for android download manager
+                                                        DownloadManager downloadManager = (DownloadManager) Init.getApplication().getSystemService(Context.DOWNLOAD_SERVICE);
+                                                        DownloadManager.Request request = new DownloadManager.Request(uri);
+                                                        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
+                                                                DownloadManager.Request.NETWORK_MOBILE);
 
+// set title and description
+                                                        request.setTitle("图片下载");
+                                                        request.setDescription("正在保存您选择的图片");
+
+                                                        request.allowScanningByMediaScanner();
+                                                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+//set the local destination for download file to a path within the application's external files directory
+                                                        request.setDestinationInExternalFilesDir(Init.getApplication(), Environment.DIRECTORY_PICTURES, url.substring(url.lastIndexOf('/') + 1));
+                                                        request.setMimeType("*/*");
+                                                        downloadManager.enqueue(request);
+                                                        break;
+                                                    case 1:
+                                                        Intent share = new Intent(Intent.ACTION_SEND);
+                                                        share.setType("image/jpeg");
+                                                        Uri contentUri = getUriForFile(Init.getApplication(), BuildConfig.APPLICATION_ID + ".fileprovider", cacheFile);
+
+                                                        Intent intent = new Intent(Intent.ACTION_SEND);
+                                                        String mime = URLConnection.guessContentTypeFromName(cacheFile.getName());
+                                                        for (ResolveInfo resolveInfo : moe.xing.baseutils.utils.IntentUtils.getIntentAppIcon(intent)) {
+                                                            String packageName = resolveInfo.activityInfo.packageName;
+                                                            Init.getApplication().grantUriPermission(packageName, contentUri,
+                                                                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                                                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                                                        }
+                                                        intent.setDataAndType(contentUri, mime);
+                                                        intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                                                        IntentUtils.startIntent(share);
+                                                        break;
+                                                }
+                                            }
+                                        }).setNegativeButton(android.R.string.cancel, null).show();
+
+                                return false;
+                            }
+                        });
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 }
             });
+
         } else if (picsRes != null) {
             scaleImageView.setImage(ImageSource.resource(picsRes.get(position)));
         }
+
         container.addView(imageView);
         return imageView;
     }
