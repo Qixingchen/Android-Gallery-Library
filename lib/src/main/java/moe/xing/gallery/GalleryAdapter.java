@@ -140,7 +140,7 @@ class GalleryAdapter extends PagerAdapter {
                                                         Intent share = new Intent(Intent.ACTION_SEND);
                                                         share.setType("image/jpeg");
                                                         Uri contentUri = getUriForFile(Init.getApplication(), Init.getApplication().getPackageName() + ".fileprovider", cacheFile);
-                                                        String mime = URLConnection.guessContentTypeFromName(cacheFile.getName());
+                                                        String mime = URLConnection.guessContentTypeFromName("image/jpeg");
                                                         for (ResolveInfo resolveInfo : moe.xing.baseutils.utils.IntentUtils.getIntentAppIcon(share)) {
                                                             String packageName = resolveInfo.activityInfo.packageName;
                                                             Init.getApplication().grantUriPermission(packageName, contentUri,
