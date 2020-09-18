@@ -1,5 +1,6 @@
 package moe.xing.gallery;
 
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,7 +27,6 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import java.io.File;
 import java.net.URLConnection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import moe.xing.baseutils.Init;
 import moe.xing.baseutils.utils.IntentUtils;
@@ -108,6 +108,13 @@ class GalleryAdapter extends PagerAdapter {
                         scaleImageView.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
+
+                                if (imageView.getContext() instanceof Activity) {
+                                    if (((Activity) (imageView.getContext())).isFinishing()) {
+                                        return false;
+                                    }
+                                }
+
                                 final String[] actions = new String[]{"保存图片"};
                                 new AlertDialog.Builder(imageView.getContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
                                         .setTitle("请选择操作")
@@ -158,7 +165,7 @@ class GalleryAdapter extends PagerAdapter {
                                 return false;
                             }
                         });
-                    } catch (InterruptedException | ExecutionException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
