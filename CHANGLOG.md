@@ -1,3 +1,6 @@
+V1.7.0
+save image use RxBus send Notification
+
 V1.6.0
 add save image
 

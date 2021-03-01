@@ -3,13 +3,18 @@ package moe.xing.galleryapp;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-
-import java.util.ArrayList;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+
+import java.util.ArrayList;
+
 import moe.xing.gallery.GalleryActivity;
+import moe.xing.gallery.GalleryAdapter;
 import moe.xing.galleryapp.databinding.ActivityDemoBinding;
+import moe.xing.rx_utils.RxBus;
+import rx.functions.Action1;
 
 public class DemoActivity extends AppCompatActivity {
 
@@ -21,6 +26,16 @@ public class DemoActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.activity_demo, null, false);
 
         setContentView(mBinding.getRoot());
+
+        RxBus.getInstance().toObserverable().subscribe(new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                if (o instanceof GalleryAdapter.SaveImage) {
+                    Toast.makeText(DemoActivity.this, ((GalleryAdapter.SaveImage) o).getUrl(), Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
 
         mBinding.showImages.setOnClickListener(new View.OnClickListener() {
             @Override

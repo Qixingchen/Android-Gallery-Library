@@ -1,14 +1,9 @@
 package moe.xing.gallery;
 
 import android.app.Activity;
-import android.app.DownloadManager;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +20,9 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
 import java.io.File;
-import java.net.URLConnection;
 import java.util.List;
 
-import moe.xing.baseutils.Init;
-import moe.xing.baseutils.utils.IntentUtils;
-
-import static androidx.core.content.FileProvider.getUriForFile;
+import moe.xing.rx_utils.RxBus;
 
 /**
  * Created by Qi Xingchen on 16-11-3.
@@ -39,7 +30,7 @@ import static androidx.core.content.FileProvider.getUriForFile;
  * 图片查看器
  */
 
-class GalleryAdapter extends PagerAdapter {
+public class GalleryAdapter extends PagerAdapter {
     @DrawableRes
     int holder;
     @Nullable
@@ -123,40 +114,7 @@ class GalleryAdapter extends PagerAdapter {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 switch (which) {
                                                     case 0:
-                                                        String url = pics.get(position);
-                                                        Uri uri = Uri.parse(url);
-                                                        // Create request for android download manager
-                                                        DownloadManager downloadManager = (DownloadManager) Init.getApplication().getSystemService(Context.DOWNLOAD_SERVICE);
-                                                        DownloadManager.Request request = new DownloadManager.Request(uri);
-                                                        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
-                                                                DownloadManager.Request.NETWORK_MOBILE);
-
-// set title and description
-                                                        request.setTitle("图片下载");
-                                                        request.setDescription("正在保存您选择的图片");
-
-                                                        request.allowScanningByMediaScanner();
-                                                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-//set the local destination for download file to a path within the application's external files directory
-                                                        request.setDestinationInExternalFilesDir(Init.getApplication(), Environment.DIRECTORY_PICTURES, url.substring(url.lastIndexOf('/') + 1));
-                                                        request.setMimeType("*/*");
-                                                        downloadManager.enqueue(request);
-                                                        break;
-                                                    case 1:
-                                                        Intent share = new Intent(Intent.ACTION_SEND);
-                                                        share.setType("image/jpeg");
-                                                        Uri contentUri = getUriForFile(Init.getApplication(), Init.getApplication().getPackageName() + ".fileprovider", cacheFile);
-                                                        String mime = URLConnection.guessContentTypeFromName("image/jpeg");
-                                                        for (ResolveInfo resolveInfo : moe.xing.baseutils.utils.IntentUtils.getIntentAppIcon(share)) {
-                                                            String packageName = resolveInfo.activityInfo.packageName;
-                                                            Init.getApplication().grantUriPermission(packageName, contentUri,
-                                                                    Intent.FLAG_GRANT_READ_URI_PERMISSION
-                                                                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                                                        }
-                                                        share.setDataAndType(contentUri, mime);
-                                                        share.putExtra(Intent.EXTRA_STREAM, contentUri);
-                                                        IntentUtils.startIntent(share);
+                                                        RxBus.getInstance().send(new SaveImage(pics.get(position)));
                                                         break;
                                                 }
                                             }
@@ -179,4 +137,19 @@ class GalleryAdapter extends PagerAdapter {
         return imageView;
     }
 
+    public class SaveImage {
+        private String url;
+
+        public SaveImage(String url) {
+            this.url = url;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+    }
 }
