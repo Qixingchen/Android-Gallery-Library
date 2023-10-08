@@ -2,6 +2,7 @@ package moe.xing.gallery;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -22,7 +23,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import java.io.File;
 import java.util.List;
 
-import moe.xing.rx_utils.RxBus;
+import moe.xing.rx2_utils.RxBus;
 
 /**
  * Created by Qi Xingchen on 16-11-3.
@@ -83,6 +84,24 @@ public class GalleryAdapter extends PagerAdapter {
 
             final FutureTarget<File> future = Glide.with(container.getContext())
                     .load(pics.get(position))
+                    .listener(new com.bumptech.glide.request.RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable com.bumptech.glide.load.engine.GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            if (e != null) {
+                                new AlertDialog.Builder(imageView.getContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
+                                        .setTitle("图片加载失败")
+                                        .setMessage(e.getMessage())
+                                        .setNegativeButton(android.R.string.cancel, null)
+                                        .show();
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
                     .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
 
             AsyncTask.execute(new Runnable() {
@@ -125,6 +144,7 @@ public class GalleryAdapter extends PagerAdapter {
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
+                        RxBus.getInstance().send(new loadImageError(e));
                     }
                 }
             });
@@ -150,6 +170,22 @@ public class GalleryAdapter extends PagerAdapter {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+    }
+
+    public class loadImageError {
+        private Throwable e;
+
+        public loadImageError(Throwable e) {
+            this.e = e;
+        }
+
+        public Throwable getE() {
+            return e;
+        }
+
+        public void setE(Throwable e) {
+            this.e = e;
         }
     }
 }

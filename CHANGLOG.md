@@ -1,3 +1,7 @@
+V1.8.0
+upgrade
+add load error callback
+
 V1.7.0
 save image use RxBus send Notification
 

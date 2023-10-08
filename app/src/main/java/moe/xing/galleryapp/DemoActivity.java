@@ -1,5 +1,6 @@
 package moe.xing.galleryapp;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,16 +11,17 @@ import androidx.databinding.DataBindingUtil;
 
 import java.util.ArrayList;
 
+import io.reactivex.functions.Consumer;
 import moe.xing.gallery.GalleryActivity;
 import moe.xing.gallery.GalleryAdapter;
 import moe.xing.galleryapp.databinding.ActivityDemoBinding;
-import moe.xing.rx_utils.RxBus;
-import rx.functions.Action1;
+import moe.xing.rx2_utils.RxBus;
 
 public class DemoActivity extends AppCompatActivity {
 
     private ActivityDemoBinding mBinding;
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,13 +29,13 @@ public class DemoActivity extends AppCompatActivity {
 
         setContentView(mBinding.getRoot());
 
-        RxBus.getInstance().toObserverable().subscribe(new Action1<Object>() {
+
+        RxBus.getInstance().toObserverable().subscribe(new Consumer<Object>() {
             @Override
-            public void call(Object o) {
+            public void accept(Object o) throws Exception {
                 if (o instanceof GalleryAdapter.SaveImage) {
                     Toast.makeText(DemoActivity.this, ((GalleryAdapter.SaveImage) o).getUrl(), Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 
